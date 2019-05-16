@@ -29,9 +29,7 @@ for camera in chunk.cameras:
     # Access Absolute and Relative altitudes
     abs_alt = float(camera.photo.meta['DJI/AbsoluteAltitude'])
     rel_alt = float(camera.photo.meta['DJI/RelativeAltitude'])
-
     
-
     print(camera.label)
     print('ref_rot: ', camera.reference.rotation)
     print('absolute: %f \t relative: %f' % (abs_alt, rel_alt))
