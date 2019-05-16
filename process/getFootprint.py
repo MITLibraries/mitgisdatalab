@@ -19,14 +19,23 @@ def GetPoint(currentHeading, X, Y, WidthOrHeight, Distance):
         Quadrant = 4
         RelativeHeading = 360.0 - currentHeading
 
-    print('Working with the following heading: ', currentHeading, end='\n\n')
+    print('Current heading:', str(currentHeading) + ',', 'Quadrant:', Quadrant)
+    print('Relative heading:', RelativeHeading, end='\n\n') 
     calculatedDistance = 0.0
     Opposite = 1.0
     RadHeading = RelativeHeading * pi / 180.0
+
+    # Incrementally, the hypotenuse (distance) is found by moving along the
+    # opposite side one step at a time. Increasing the opposite slowly helps
+    # find an adjacent side length, which then allows the use of tan to find
+    # the hypotenuse, or current distance away from origin.
     while calculatedDistance < Distance:
         print('Opposite: ' + str(Opposite))
+	# New adjacent is calculated given new opposite position
         Adjacent = Opposite / tan(RadHeading)
-        print('Quadrant: ' + str(Quadrant))
+
+	# These conditionals ensure that the signs of X/Y coordinates are
+        # correct depending on the quadrant specified by the yaw (heading)
         if Quadrant == 1:
             newX = Adjacent
             newY = Opposite
