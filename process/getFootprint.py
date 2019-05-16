@@ -19,14 +19,14 @@ def GetPoint(currentHeading, X, Y, WidthOrHeight, Distance):
         Quadrant = 4
         RelativeHeading = 360.0 - currentHeading
 
-    print currentHeading
+    print('Working with the following heading: ', currentHeading, end='\n\n')
     calculatedDistance = 0.0
     Opposite = 1.0
     RadHeading = RelativeHeading * pi / 180.0
     while calculatedDistance < Distance:
-        #print "Opposite: " + str(Opposite)
+        print('Opposite: ' + str(Opposite))
         Adjacent = Opposite / tan(RadHeading)
-        #print "Quadrant: " + str(Quadrant)
+        print('Quadrant: ' + str(Quadrant))
         if Quadrant == 1:
             newX = Adjacent
             newY = Opposite
@@ -39,16 +39,17 @@ def GetPoint(currentHeading, X, Y, WidthOrHeight, Distance):
         elif Quadrant == 4:
             newX = Opposite * -1.0
             newY = Adjacent
-        #print str(newX) + " :: " + str(newY)
+        print('X:', str(newX), ' :: ', 'Y:', str(newY))
         calculatedDistance = math.sqrt((newX * newX) + (newY * newY))
-        #print "Calculated Distance: " + str(calculatedDistance)
+        print('Calculated Distance: ' + str(calculatedDistance))
         Opposite += 1.0
     
-    print calculatedDistance    
+    print('\nFinal distance: ', calculatedDistance, end='\n\n')
     return [newX + X, newY + Y]
 
-#Jesus: please read the XY and heading (yaw) and from a file.  It has to be projected coordinates, as from Drone2Map, not what I recall the
-# Photoscan output - latitude and longitude (6370990 vs 33.20200).
+# Jesus: please read the XY and heading (yaw) and from a file.  It has to be
+# projected coordinates, as from Drone2Map, not what I recall the Photoscan
+# output - latitude and longitude (6370990 vs 33.20200).
 X = 639707.969  
 Y = 3823600.569
 Heading = -94.3
@@ -63,7 +64,12 @@ theValue = GetPoint(ModHeading, X, Y, 0, 50)
 #This code finds the point along the heading of the drone (the direction the drone was facing) and then the point in the opposite
 #direction.  You need to go 90 degrees in both directions in order to find the corners as we discussed.  I may not see you the
 #rest of today but we will work on this tomorrow.
-f = open("C:\\users\\dsheehan\\desktop\\JesusData\\data.csv","w")
+cur_dir = os.path.dirname(os.path.realpath(__file__))
+rel_loc = 'footprint-output/data-output.csv'
+full_path = os.path.join(cur_dir, rel_loc)
+
+#f = open("home\\jesusg\\edoc\\MIT-GIS-DataLab\\process\\data-output.csv","w")
+f = open(full_path, 'w')
 f.write("x,y\n")
 f.write(str(theValue[0]) + ", " + str(theValue[1]) + "\n")
 #distance along heading
