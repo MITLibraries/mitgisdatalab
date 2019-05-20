@@ -84,7 +84,17 @@ f.write(str(theValue[0]) + ", " + str(theValue[1]) + "\n")
 #distance along heading
 f.write(str(X) + ", " + str(Y) + "\n")
 OppositeHeading = 180.0 - abs(Heading)
+
+corners = list()
+corners.append(theValue)
+
 theValue = GetPoint(OppositeHeading, X, Y, 0, 50)
+
+corners.append(theValue)
+
+print('Known corners:')
+print(corners)
+
 f.write(str(theValue[0]) + ", " + str(theValue[1]) + "\n")
 f.write(str(X) + ", " + str(Y) + "\n")
 
