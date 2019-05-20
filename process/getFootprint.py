@@ -5,7 +5,7 @@ from math import sqrt
 import os
 
 
-REL_OUTPUT_LOC = 'footprint-output/modular-output.csv'
+REL_OUTPUT_LOC = 'footprint-output/data-output.csv'
 
 def main():
     x = 639707.969  
@@ -19,6 +19,8 @@ def main():
     corners = get_footprint(heading, x, y)
     write_to_csv(corners, coords)
 
+# Given a particular heading, the corner (up until the specified distance) is
+# found. TODO: widthOrHeight is a parameter that is considered.
 def get_point(currentHeading, x, y, widthOrHeight, distance):
     
     if currentHeading < 90.0:
