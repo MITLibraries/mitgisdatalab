@@ -5,7 +5,7 @@ from math import sqrt
 import os
 
 def GetPoint(currentHeading, X, Y, WidthOrHeight, Distance):
-    
+    #print currentHeading
     if currentHeading < 90.0:
         Quadrant = 1
         RelativeHeading = 90.0 - currentHeading
@@ -18,8 +18,8 @@ def GetPoint(currentHeading, X, Y, WidthOrHeight, Distance):
     elif currentHeading < 360.0:
         Quadrant = 4
         RelativeHeading = 360.0 - currentHeading
+    # print str(X) + "," + str(Y) + ", " + str(currentHeading)
 
-    #print currentHeading
     calculatedDistance = 0.0
     Opposite = 1.0
     RadHeading = RelativeHeading * pi / 180.0
@@ -44,41 +44,79 @@ def GetPoint(currentHeading, X, Y, WidthOrHeight, Distance):
         #print "Calculated Distance: " + str(calculatedDistance)
         Opposite += 1.0
     
-    #print calculatedDistance    
+    #print 'Calc distance:' + str(calculatedDistance)   
     return [newX + X, newY + Y]
 
 #Jesus: please read the XY and heading (yaw) and from a file.  It has to be projected coordinates, as from Drone2Map, not what I recall the
 # Photoscan output - latitude and longitude (6370990 vs 33.20200).
-X = 639707.969  
-Y = 3823600.569
-Heading = -94.3
+X = 640243.351  
+Y = 3822558.249
+# Handle possible zero case
+Heading = 0.1
+Width = 114.0/2.0
+Height = 86.0/2.0
+
 if Heading < 0.0:
     ModHeading = 360.0 + Heading
 else:
     ModHeading = Heading
-#ModHeading = Heading
+    
+#print ModHeading
 
-theValue = GetPoint(ModHeading, X, Y, 0, 50)
+#theValue = GetPoint(ModHeading, X, Y, 0, 50)
 
-#This code finds the point along the heading of the drone (the direction the drone was facing) and then the point in the opposite
-#direction.  You need to go 90 degrees in both directions in order to find the corners as we discussed.  I may not see you the
-#rest of today but we will work on this tomorrow.
-curr_dir = os.path.dirname(os.path.realpath(__file__))
-full_path = os.path.join(curr_dir, 'footprint-output/original-output.csv')
 
-#f = open("C:\\users\\dsheehan\\desktop\\JesusData\\data.csv","w")
-f = open(full_path, 'w')
-f.write("x,y\n")
-f.write(str(theValue[0]) + ", " + str(theValue[1]) + "\n")
-#distance along heading
-f.write(str(X) + ", " + str(Y) + "\n")
-OppositeHeading = 180.0 - abs(Heading)
-theValue = GetPoint(OppositeHeading, X, Y, 0, 50)
-f.write(str(theValue[0]) + ", " + str(theValue[1]) + "\n")
-f.write(str(X) + ", " + str(Y) + "\n")
+f = open("E:\\UserFiles\\jesusg\\data.csv","w")
+f.write("x,y,point_id\n")
+theValue = GetPoint(ModHeading, X, Y, 0, Height)
+f.write(str(theValue[0]) + ", " + str(theValue[1]) + ",10\n")
 
+forwardX = theValue[0]
+forwardY = theValue[1]
+#print str(theValue[0]) + " :: " + str(theValue[1])
+
+forwardRightHeading = ModHeading + 90
+if forwardRightHeading > 360.0:
+    forwardRightHeading = forwardRightHeadin - 360.0
+    
+theValue = GetPoint(forwardRightHeading, forwardX, forwardY, 0, Width)
+#print str(theValue[0]) + " :: " + str(theValue[1])
+f.write(str(theValue[0]) + ", " + str(theValue[1]) + ",1\n")
+
+forwardLeftHeading = ModHeading - 90
+if forwardLeftHeading > 360.0:
+    forwardLeftHeading = forwardLeftHeadin - 360.0
+
+#print 'third get_point'
+theValue = GetPoint(forwardLeftHeading, forwardX, forwardY, 0, Width)
+#print str(theValue[0]) + " :: " + str(theValue[1])
+f.write(str(theValue[0]) + ", " + str(theValue[1]) + ",2\n")
+
+if ModHeading > 180.0:
+    OppositeHeading = ModHeading - 180
+else:
+    OppositeHeading = ModHeading + 180
+    
+theValue = GetPoint(OppositeHeading, X, Y, 0, Height)
+#print str(theValue[0]) + " :: " + str(theValue[1])
+f.write(str(theValue[0]) + ", " + str(theValue[1]) + ",-10\n")
+backwardX = theValue[0]
+backwardY = theValue[1]
+
+backwardRightHeading = OppositeHeading + 90
+if backwardRightHeading > 360.0:
+    backwardRightHeading = backwardRightHeading - 360.0
+theValue = GetPoint(backwardRightHeading, backwardX, backwardY, 0, Width)
+#print str(theValue[0]) + " :: " + str(theValue[1])
+f.write(str(theValue[0]) + ", " + str(theValue[1]) + ",3\n")
+
+backwardLeftHeading = OppositeHeading - 90
+if backwardLeftHeading > 360.0:
+    backwardLeftHeading = backwardLeftHeading - 360.0
+theValue = GetPoint(backwardLeftHeading, backwardX, backwardY, 0, Width)
+#print str(theValue[0]) + " :: " + str(theValue[1])
+f.write(str(theValue[0]) + ", " + str(theValue[1]) + ",4\n")
 
 f.close()
 
-#Jesus: you will need 
 
