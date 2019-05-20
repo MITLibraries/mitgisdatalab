@@ -5,12 +5,25 @@ from math import sqrt
 import os
 
 
+# Relative location where the output csv file is stored.
 REL_OUTPUT_LOC = 'footprint-output/data-output.csv'
+
+# ============================================================================
+# Constants for the width and height of a single image footprint on the ground
+# ============================================================================
+# Sensor width of the camera (millimeters)
+S_W = 12.8333
+# Focal length of the camera (millimeters)
+F_R = 8.8
+# Image width (pixels)
+IM_W = 4608
+# Image height (pixels)
+IM_H = 3456
+
 
 def main():
     x = 639707.969  
     y = 3823600.569
-
     coords = (x, y)
 
     # This is purely a testing value
@@ -19,9 +32,28 @@ def main():
     corners = get_footprint(heading, x, y)
     write_to_csv(corners, coords)
 
-# Given a particular heading, the corner (up until the specified distance) is
-# found. TODO: widthOrHeight is a parameter that is considered.
-def get_point(currentHeading, x, y, widthOrHeight, distance):
+    width, height = calculate_width_height(109)
+    print('Width: ', width)
+    print('Height: ', height)
+
+
+# Given a flight height (relative altitude) and utilizing the constants 
+# specified above, the width/height of image footprint is calculated.
+def calculate_width_height(alt):
+    # Ground sampling distance (centimeters/pixel)
+    gsd = (S_W*alt*100) / (F_R*IM_W)
+
+    # Width of single image footprint on ground (meters)
+    width = (gsd*IM_W) / 100
+
+    # Height of single image footprint on ground (meters)
+    height = (gsd*IM_H) / 100
+
+    return [width, height]
+
+
+# Given a particular heading and distance the corner is found. 
+def get_point(currentHeading, x, y, distance):
     
     if currentHeading < 90.0:
         quadrant = 1
@@ -73,6 +105,7 @@ def get_point(currentHeading, x, y, widthOrHeight, distance):
     print('\nFinal distance: ', calculatedDistance, end='\n\n')
     return [newX + x, newY + y]
 
+
 # Given xy and heading (yaw) it finds the footprint
 def get_footprint(yaw, x, y):
     corners = list()
@@ -83,13 +116,14 @@ def get_footprint(yaw, x, y):
     else:
         modHeading = heading
 
-    corners.append(get_point(modHeading, x, y, 0, 50))
+    corners.append(get_point(modHeading, x, y, 50))
     
     # Find the opposite corner of the initial
     oppositeHeading = 180 - abs(yaw)
-    corners.append(get_point(oppositeHeading, x, y, 0, 50))
+    corners.append(get_point(oppositeHeading, x, y, 50))
 
     return corners
+
 
 # Write the found footprint to csv file
 def write_to_csv(corners, coords):
@@ -114,17 +148,3 @@ def write_to_csv(corners, coords):
 if __name__ == '__main__':
     main()
    
-# Jesus: please read the XY and heading (yaw) and from a file.  It has to be
-# projected coordinates, as from Drone2Map, not what I recall the Photoscan
-# output - latitude and longitude (6370990 vs 33.20200).
-# Puts the heading on a range from 0 - 360
-
-
-
-#This code finds the point along the heading of the drone (the direction the drone was facing) and then the point in the opposite
-#direction.  You need to go 90 degrees in both directions in order to find the corners as we discussed.  I may not see you the
-#rest of today but we will work on this tomorrow.
-
-
-#Jesus: you will need 
-

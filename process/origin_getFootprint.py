@@ -49,12 +49,18 @@ def GetPoint(currentHeading, X, Y, WidthOrHeight, Distance):
 
 #Jesus: please read the XY and heading (yaw) and from a file.  It has to be projected coordinates, as from Drone2Map, not what I recall the
 # Photoscan output - latitude and longitude (6370990 vs 33.20200).
-X = 640243.351  
-Y = 3822558.249
+#X = 640243.351  
+#Y = 3822558.249
 # Handle possible zero case
-Heading = 0.1
-Width = 114.0/2.0
-Height = 86.0/2.0
+#Heading = 0.1
+#Width = 114.0/2.0
+#Height = 86.0/2.0
+
+X = 639707.969
+Y = 3823600.569
+Heading = -170.0
+Width = 40.0/2.0
+Height = 30.0/2.0
 
 if Heading < 0.0:
     ModHeading = 360.0 + Heading
@@ -65,11 +71,15 @@ else:
 
 #theValue = GetPoint(ModHeading, X, Y, 0, 50)
 
+REL_OUTPUT_LOC = 'footprint-output/original-output'
 
-f = open("E:\\UserFiles\\jesusg\\data.csv","w")
+cur_dir = os.path.dirname(os.path.realpath(__file__))
+full_path = os.path.join(cur_dir, REL_OUTPUT_LOC)
+
+f = open(full_path,"w")
 f.write("x,y,point_id\n")
 theValue = GetPoint(ModHeading, X, Y, 0, Height)
-f.write(str(theValue[0]) + ", " + str(theValue[1]) + ",10\n")
+f.write(str(theValue[0]) + "," + str(theValue[1]) + ",10\n")
 
 forwardX = theValue[0]
 forwardY = theValue[1]
@@ -81,7 +91,7 @@ if forwardRightHeading > 360.0:
     
 theValue = GetPoint(forwardRightHeading, forwardX, forwardY, 0, Width)
 #print str(theValue[0]) + " :: " + str(theValue[1])
-f.write(str(theValue[0]) + ", " + str(theValue[1]) + ",1\n")
+f.write(str(theValue[0]) + "," + str(theValue[1]) + ",1\n")
 
 forwardLeftHeading = ModHeading - 90
 if forwardLeftHeading > 360.0:
@@ -90,7 +100,7 @@ if forwardLeftHeading > 360.0:
 #print 'third get_point'
 theValue = GetPoint(forwardLeftHeading, forwardX, forwardY, 0, Width)
 #print str(theValue[0]) + " :: " + str(theValue[1])
-f.write(str(theValue[0]) + ", " + str(theValue[1]) + ",2\n")
+f.write(str(theValue[0]) + "," + str(theValue[1]) + ",2\n")
 
 if ModHeading > 180.0:
     OppositeHeading = ModHeading - 180
@@ -99,7 +109,7 @@ else:
     
 theValue = GetPoint(OppositeHeading, X, Y, 0, Height)
 #print str(theValue[0]) + " :: " + str(theValue[1])
-f.write(str(theValue[0]) + ", " + str(theValue[1]) + ",-10\n")
+f.write(str(theValue[0]) + "," + str(theValue[1]) + ",-10\n")
 backwardX = theValue[0]
 backwardY = theValue[1]
 
@@ -108,14 +118,14 @@ if backwardRightHeading > 360.0:
     backwardRightHeading = backwardRightHeading - 360.0
 theValue = GetPoint(backwardRightHeading, backwardX, backwardY, 0, Width)
 #print str(theValue[0]) + " :: " + str(theValue[1])
-f.write(str(theValue[0]) + ", " + str(theValue[1]) + ",3\n")
+f.write(str(theValue[0]) + "," + str(theValue[1]) + ",3\n")
 
 backwardLeftHeading = OppositeHeading - 90
 if backwardLeftHeading > 360.0:
     backwardLeftHeading = backwardLeftHeading - 360.0
 theValue = GetPoint(backwardLeftHeading, backwardX, backwardY, 0, Width)
 #print str(theValue[0]) + " :: " + str(theValue[1])
-f.write(str(theValue[0]) + ", " + str(theValue[1]) + ",4\n")
+f.write(str(theValue[0]) + "," + str(theValue[1]) + ",4\n")
 
 f.close()
 
