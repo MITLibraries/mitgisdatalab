@@ -105,6 +105,9 @@ def write_to_csv(corners, coords):
 
     f.close()
 
+    print('Known corners:')
+    print(corners)
+
 
 if __name__ == '__main__':
     main()
