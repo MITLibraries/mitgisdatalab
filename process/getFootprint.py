@@ -29,12 +29,12 @@ def main():
     # This is purely a testing value
     heading = -94.3
 
-    corners = get_footprint(heading, x, y)
-    write_to_csv(corners, coords)
-
     width, height = calculate_width_height(109)
     print('Width: ', width)
     print('Height: ', height)
+
+    corners = get_footprint(heading, coords, width, height)
+    write_to_csv(corners, coords)
 
 
 # Given a flight height (relative altitude) and utilizing the constants 
@@ -107,20 +107,44 @@ def get_point(currentHeading, x, y, distance):
 
 
 # Given xy and heading (yaw) it finds the footprint
-def get_footprint(yaw, x, y):
+def get_footprint(yaw, coords, width, height):
     corners = list()
     
     # Placing yaw in the 0 - 360 range
     if yaw < 0.0:
-        modHeading = 360.0 + yaw
+        mod_heading = 360.0 + yaw
     else:
-        modHeading = heading
+        mod_heading = heading
 
-    corners.append(get_point(modHeading, x, y, 50))
+    fwd_coord = get_point(mod_heading, coords[0], coords[1], height)
+    corners.append(init_coords)
     
+    # Find the corner to the right of the initial
+    fwd_right_heading = mod_heading + 90
+    if fwd_right_heading > 360.0:
+        fwd_right_heading = fwd_right_heading - 360
+
+    # The value is saved here to be added to the polygon FIRST
+    # TODO: Must be added to array_for_poly
+    first_poly_point = get_point(fwd_right_heading, fwd_coord[0], 
+                                fwd_coord[1], width)
+    corners.append(first_poly_point)
+
+    # Find the corner to the left of the initial
+    fwd_left_heading = mod_heading - 90
+    # NOTE: There is no check for fwd left heading being under 0
+    if fwd_left_heading > 360.0:
+        fwd_left_heading = fwd_left_heading - 360.0
+
+    # Saved to be added to the polygon SECOND
+    # TODO: Must be added to array_for_poly
+    second_poly_point = get_point(fwd_left_heading, fwd_coord[0],
+                                fwd_coord[1], width)
+
+
     # Find the opposite corner of the initial
-    oppositeHeading = 180 - abs(yaw)
-    corners.append(get_point(oppositeHeading, x, y, 50))
+    opposite_heading = 180 - abs(yaw)
+    corners.append(get_point(opposite_heading, x, y, 50))
 
     return corners
 
