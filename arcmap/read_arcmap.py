@@ -31,7 +31,7 @@ try:
         full_path = os.path.join(cur_dir, REL_OUTPUT_LOC)
 
         # Export data as a csv
-        df.to_csv(full_path)
+        df.to_csv(full_path, index=False)
 
         del cursor
 except:
