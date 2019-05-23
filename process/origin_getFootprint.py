@@ -1,5 +1,5 @@
 import math
-#import arcpy
+import arcpy
 from math import pi
 from math import tan
 from math import sqrt
@@ -19,14 +19,14 @@ def writeTheFile(arrayForPoly):
     has_z = "DISABLED"
 
     # Use Describe to get a SpatialReference object
-#    spatial_reference = arcpy.Describe("C:\\Users\\Daniel\\Desktop\\Work\\Work\\IndexingProject\\OutData\\template.shp").spatialReference
+    spatial_reference = arcpy.Describe("C:\\Users\\Daniel\\Desktop\\Work\\Work\\IndexingProject\\OutData\\template.shp").spatialReference
 
     # Execute CreateFeatureclass
-#    arcpy.CreateFeatureclass_management(outPath, outName, geometry_type, template, has_m, has_z, spatial_reference)
-#    addPolyCursor = arcpy.da.InsertCursor(outFile, ['SHAPE@', 'photoID'])
-#    polygon = arcpy.Polygon(arrayForPoly)
-#    addPolyCursor.insertRow([polygon, '297'])
-#    del addPolyCursor
+    arcpy.CreateFeatureclass_management(outPath, outName, geometry_type, template, has_m, has_z, spatial_reference)
+    addPolyCursor = arcpy.da.InsertCursor(outFile, ['SHAPE@', 'photoID'])
+    polygon = arcpy.Polygon(arrayForPoly)
+    addPolyCursor.insertRow([polygon, '297'])
+    del addPolyCursor
 
 def GetPoint(currentHeading, X, Y, WidthOrHeight, Distance):
     #print currentHeading
@@ -86,7 +86,7 @@ else:
 #print ModHeading
 
 # make an array to store each polygon in
-#arrayForPoly = arcpy.Array()
+arrayForPoly = arcpy.Array()
 
 #f = open("C:\\users\\daniel\\Desktop\\work\\work\\IndexingProject\\data\\data.csv","w")
 cur_dir = os.path.dirname(os.path.realpath(__file__))
@@ -108,7 +108,7 @@ if forwardRightHeading > 360.0:
 theValue = GetPoint(forwardRightHeading, forwardX, forwardY, 0, Width)
 #print str(theValue[0]) + " :: " + str(theValue[1])
 f.write(str(theValue[0]) + ", " + str(theValue[1]) + "\n") # 1
-#arrayForPoly.add(arcpy.Point(theValue[0], theValue[1])) # first coordinate
+arrayForPoly.add(arcpy.Point(theValue[0], theValue[1])) # first coordinate
 startX = theValue[0]
 startY = theValue[1]
 
@@ -119,7 +119,7 @@ if forwardLeftHeading > 360.0:
 theValue = GetPoint(forwardLeftHeading, forwardX, forwardY, 0, Width)
 #print str(theValue[0]) + " :: " + str(theValue[1])
 f.write(str(theValue[0]) + ", " + str(theValue[1]) + "\n") # 2
-#arrayForPoly.add(arcpy.Point(theValue[0], theValue[1])) # second coordinate
+arrayForPoly.add(arcpy.Point(theValue[0], theValue[1])) # second coordinate
 
 if ModHeading > 180.0:
     OppositeHeading = ModHeading - 180
@@ -137,7 +137,7 @@ if backwardRightHeading > 360.0:
 theValue = GetPoint(backwardRightHeading, backwardX, backwardY, 0, Width)
 #print str(theValue[0]) + " :: " + str(theValue[1])
 f.write(str(theValue[0]) + ", " + str(theValue[1]) + "\n") # 3
-#arrayForPoly.add(arcpy.Point(theValue[0], theValue[1])) # third coordinate
+arrayForPoly.add(arcpy.Point(theValue[0], theValue[1])) # third coordinate
 
 backwardLeftHeading = OppositeHeading - 90
 if backwardLeftHeading > 360.0:
@@ -145,8 +145,8 @@ if backwardLeftHeading > 360.0:
 theValue = GetPoint(backwardLeftHeading, backwardX, backwardY, 0, Width)
 #print str(theValue[0]) + " :: " + str(theValue[1])
 f.write(str(theValue[0]) + ", " + str(theValue[1]) + "\n") # 4
-#arrayForPoly.add(arcpy.Point(theValue[0], theValue[1])) # fourth coordinate
-#arrayForPoly.add(arcpy.Point(startX, startY)) # back to first coordinate
+arrayForPoly.add(arcpy.Point(theValue[0], theValue[1])) # fourth coordinate
+arrayForPoly.add(arcpy.Point(startX, startY)) # back to first coordinate
 
 f.close()
 

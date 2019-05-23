@@ -1,37 +1,42 @@
+import os
 import math
 from math import pi
 from math import tan
 from math import sqrt
+import config
 import pandas as pd
-import os
+import arcpy
+from arcpy import env
 
-
-# Relative location where the output csv file is stored.
-REL_OUTPUT_LOC = 'footprint-output/mod-output.csv'
-
-# Location where the drone data lives
-DRONE_CSV_PATH = 'data/merged_data.csv'
-
-# ============================================================================
-# Constants for the width and height of a single image footprint on the ground
-# ============================================================================
-# Sensor width of the camera (millimeters)
-S_W = 12.8333
-# Focal length of the camera (millimeters)
-F_R = 8.8
-# Image width (pixels)
-IM_W = 4608
-# Image height (pixels)
-IM_H = 3456
+env.overwriteOutput = True
 
 
 def main():
-    # Obtain path for drone csv data
-    cur_dir = os.path.dirname(os.path.realpath(__file__))
-    full_path = os.path.join(cur_dir, DRONE_CSV_PATH)
-
-    drone_df = pd.read_csv(full_path)
+    drone_df = pd.read_csv(get_full_path(DRONE_CSV_PATH))
     print('Current Data being processed:\n', drone_df.head()) 
+
+    spatial_ref = arcpy.Describe(TEMPLATE).spatialReference
+    # TODO: Does loc below only have to happen once in the beginning?
+    arcpy.CreateFeatureclass_management(OUT_PATH, OUT_NAME, GEOMETRY_TYPE,
+                                        TEMPLATE, HAS_M, HAS_Z, spatial_ref)
+    add_poly_cursor = arcpy.da.InsertCursor(OUTFILE, ['SHAPE@', 'photoID'])
+
+
+    for index, row in drone_df.iterrows():
+        # Longitude and latitude may be switched in arcmap data OR this script
+        coords = (row['longitude'], row['latitude'])
+        heading = row['yaw']
+
+        width, height = calculate_width_height(row['flying_height'])
+
+        poly_array, corners = get_footprint(calculate_heading(heading),
+                                            coords, width, height)
+
+        # Turn poly_array into a polygon and add to the shapefile
+        polygon = arcpy.Polygon(poly_array)
+        add_poly_cursor.insertRow([polygon, row['image_name']])
+
+    del add_poly_cursor
 
     x = 640297.412572  
     y = 3822531.071888
@@ -40,9 +45,6 @@ def main():
     # This is purely a testing value
     heading = 90.225403
 
-    # TODO: Uncomment the code below
-    #width, height = calculate_width_height(109)
-    # Delete the below two lines
     width = 40.0 / 2.0
     height = 30.0 / 2.0
 
@@ -129,8 +131,6 @@ def assign_xy_signs(quad, adj, opp):
     return [newX, newY]
 
 
-
-
 # Find all the headings needed to obtain the footprint
 # TODO: When finding left headings, will heading ever be over 360? Wondering
 # this because the degrees are substracted from referance heading
@@ -181,7 +181,7 @@ def calculate_headings(init_heading):
 # Given xy and heading dictionary it finds the footprint
 def get_footprint(heading_dict, coords, width, height):
     corners = list()
-    poly_array = None
+    poly_ptarray = arcpy.Array()
     
     # NOTE: heading_dict contains all needed headings with the labes as the
     # following: 'mod', 'fwdr', 'fwdl', 'opp', 'oppr', 'oppl'
@@ -190,46 +190,44 @@ def get_footprint(heading_dict, coords, width, height):
                         coords[1], height)
     corners.append(fwd_coord)
     
-    # The value is saved here to be added to the polygon FIRST
-    # TODO: Must be added to array_for_poly
+    # The point is saved here to be added to the polygon FIRST
     first_poly_point = get_point(heading_dict['fwdr'], fwd_coord[0], 
                                 fwd_coord[1], width)
     corners.append(first_poly_point)
+    poly_ptarray.add(arcpy.Point(first_poly_point[0], first_poly_point[1]))
 
     # Saved to be added to the polygon SECOND
-    # TODO: Must be added to array_for_poly
     second_poly_point = get_point(heading_dict['fwdl'], fwd_coord[0],
                                 fwd_coord[1], width)
     corners.append(second_poly_point)
+    poly_ptarray.add(arcpy.Point(second_poly_point[0], second_poly_point[1]))
 
     # Repeat the process for the opposite side of the polygon
     bkwd_coord = get_point(heading_dict['opp'], coords[0],
                                 coords[1], height)
     corners.append(bkwd_coord)
 
-    # THIRD POLYGON
-    # TODO: Must be added to array_for_poly
+    # THIRD POLYGON POINT
     third_poly_point = get_point(heading_dict['oppr'], bkwd_coord[0],
                                 bkwd_coord[1], width)
     corners.append(third_poly_point)
+    poly_array.add(arcpy.Point(third_poly_point[0], third_poly_point[1]))
 
-    # FOURTH POLYGON
-    # TODO: Must be added to array_for_poly
+    # FOURTH POLYGON POINT
     fourth_poly_point = get_point(heading_dict['oppl'], bkwd_coord[0],
                                 bkwd_coord[1], width)
     corners.append(fourth_poly_point)
+    poly_ptarray.add(arcpy.Point(fourth_poly_point[0], fourth_poly_point[1]))
+
+    # The first point needs to be added again to complete the polygon's shape
+    poly_ptarray.add(arcpy.Point(first_poly_point[0], first_poly_point[1]))
 
     return [poly_array, corners]
 
 
 # Write the found footprint to csv file
 def write_to_csv(corners):
-    # Finding absolute path where returned values are outputted
-    cur_dir = os.path.dirname(os.path.realpath(__file__))
-    full_path = os.path.join(cur_dir, REL_OUTPUT_LOC)
-
-
-    f = open(full_path, 'w')
+    f = open(get_full_path(REL_OUTPUT_LOC), 'w')
 
     f.write('x,y,photoID\n')
     for value in corners:
