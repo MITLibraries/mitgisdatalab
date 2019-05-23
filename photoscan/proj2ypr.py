@@ -2,12 +2,13 @@
 import PhotoScan
 
 
-PROJ_PATH = 'E:/UserFiles/jesusg/testing/lowRes/lowScan.psx'
-OUTPUT_PATH = 'E:/UserFiles/jesusg/testing/lowRes/low_data.csv'
+PROJ_PATH = 'E:/UserFiles/jesusg/MIT-GIS-DataLab-master/photoscan/lowRes/lowScan.psx'
+OUTPUT_PATH = 'E:/UserFiles/jesusg/MIT-GIS-DataLab-master/photoscan/lowRes/low_data.csv'
 
 
 def main():
     # Create a PhotoScan document object that will be used for particular project
+    print('code is running')
     doc = PhotoScan.app.document
 
     # Assign a project to the PhotoScan document object
@@ -38,13 +39,14 @@ def extract_ypr(chunk):
         # Save yaw, pitch, and roll
         yaw_list.append(yaw)
         pitch_list.append(pitch)
-        roll_list.append(row)
+        roll_list.append(roll)
 
     f = open(OUTPUT_PATH, 'w')    
-    f.write('image_name,yaw,pirch,roll\n')
+    f.write('image_name,yaw,pitch,roll\n')
     
     for row in zip(image_list, yaw_list, pitch_list, roll_list):
-        f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
+        print(row[0])
+        f.write(str(row[0]) + '.JPG,' + str(row[1]) + ',' + str(row[2]) + ',' + str(row[3]) + '\n')
 
     f.close()
 
@@ -75,3 +77,5 @@ def analyze_altitudes(camera):
     print('GPS altitude: %f' % gps_alt)
 
 
+if __name__ == "__main__":
+    main()
