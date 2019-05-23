@@ -5,7 +5,8 @@ import os
 # Configuations
 # =============
 
-# Relative location where the output csv file is stored.
+# Relative location where the output csv file is stored. Outputting a csv is
+# not necessary for finding the footprint of the images
 REL_OUTPUT_LOC = 'footprint-output/mod-output.csv'
 
 # Location where the drone data lives

@@ -16,7 +16,6 @@ def main():
     print('Current Data being processed:\n', drone_df.head()) 
 
     spatial_ref = arcpy.Describe(TEMPLATE).spatialReference
-    # TODO: Does loc below only have to happen once in the beginning?
     arcpy.CreateFeatureclass_management(OUT_PATH, OUT_NAME, GEOMETRY_TYPE,
                                         TEMPLATE, HAS_M, HAS_Z, spatial_ref)
     add_poly_cursor = arcpy.da.InsertCursor(OUTFILE, ['SHAPE@', 'photoID'])
@@ -42,21 +41,6 @@ def main():
             add_poly_cursor.insertRow([polygon, row['image_name']])
 
     del add_poly_cursor
-
-    # x = 640297.412572  
-    # y = 3822531.071888
-    # coords = (x, y)
-
-    # # This is purely a testing value
-    # heading = 90.225403
-
-    # width = 40.0 / 2.0
-    # height = 30.0 / 2.0
-
-    # poly_array, corners = get_footprint(calculate_headings(heading), coords,
-    #                                     width, height)
-
-    #write_to_csv(corners)
 
 
 # Given a flight height (relative altitude) and utilizing the constants 
