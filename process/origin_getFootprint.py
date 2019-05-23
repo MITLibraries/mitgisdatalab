@@ -4,8 +4,8 @@ from math import pi
 from math import tan
 from math import sqrt
 import os
-#from arcpy import env
-#env.overwriteOutput = True
+from arcpy import env
+env.overwriteOutput = True
 
 def writeTheFile(arrayForPoly):
 

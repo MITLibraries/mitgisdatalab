@@ -29,7 +29,7 @@ def main():
 
         width, height = calculate_width_height(row['flying_height'])
 
-        poly_array, corners = get_footprint(calculate_heading(heading),
+        poly_array, corners = get_footprint(calculate_headings(heading),
                                             coords, width, height)
 
         # Turn poly_array into a polygon and add to the shapefile
@@ -38,20 +38,20 @@ def main():
 
     del add_poly_cursor
 
-    x = 640297.412572  
-    y = 3822531.071888
-    coords = (x, y)
+    # x = 640297.412572  
+    # y = 3822531.071888
+    # coords = (x, y)
 
-    # This is purely a testing value
-    heading = 90.225403
+    # # This is purely a testing value
+    # heading = 90.225403
 
-    width = 40.0 / 2.0
-    height = 30.0 / 2.0
+    # width = 40.0 / 2.0
+    # height = 30.0 / 2.0
 
-    poly_array, corners = get_footprint(calculate_headings(heading), coords,
-                                        width, height)
+    # poly_array, corners = get_footprint(calculate_headings(heading), coords,
+    #                                     width, height)
 
-    write_to_csv(corners)
+    #write_to_csv(corners)
 
 
 # Given a flight height (relative altitude) and utilizing the constants 

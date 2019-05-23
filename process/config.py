@@ -43,5 +43,3 @@ GEOMETRY_TYPE = 'POLYGON'
 TEMPLATE = get_full_path('data/template_shp/template.shp')
 HAS_M = 'DISABLED'
 HAS_Z = 'DISABLED'
-
-
