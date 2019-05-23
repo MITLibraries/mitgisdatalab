@@ -18,7 +18,7 @@ chunk.alignCameras()
 chunk.buildDepthMaps(quality=PhotoScan.LowestQuality, filter=PhotoScan.AggressiveFiltering)
 chunk.buildDenseCloud()
 # Currently working on the build mesh phase
-chunk.buildModel(surface_type=)
+# chunk.buildModel(surface_type='')
 
 
 
