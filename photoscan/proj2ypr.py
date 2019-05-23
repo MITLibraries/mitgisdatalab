@@ -1,4 +1,4 @@
-import pandas as pd
+#import pandas as pd
 import PhotoScan
 
 
@@ -40,15 +40,25 @@ def extract_ypr(chunk):
         pitch_list.append(pitch)
         roll_list.append(row)
 
+    f = open(OUTPUT_PATH, 'w')    
+    f.write('image_name,yaw,pirch,roll\n')
+    
+    for row in zip(image_list, yaw_list, pitch_list, roll_list):
+        f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
+
+    f.close()
+
+
+
     # Dictionary is created using the data
-    d = {'image_name': image_list, 'yaw': yaw_list,
-        'pitch': pitch_list, 'roll': roll_list}
+#    d = {'image_name': image_list, 'yaw': yaw_list,
+#        'pitch': pitch_list, 'roll': roll_list}
 
     # Dictionary is used to create the pandas dataframe
-    df = pd.DataFrame(data=d)
+#    df = pd.DataFrame(data=d)
     
     # Newly created dataframe is exported to a csv file
-    df.to_csv(OUTPUT_PATH)
+#    df.to_csv(OUTPUT_PATH)
 
 
 # Given a camera's metadata the altitudes are examined
