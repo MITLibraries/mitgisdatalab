@@ -33,7 +33,7 @@ def main():
     print('Width: ', width)
     print('Height: ', height)
 
-    corners = get_footprint(heading, coords, width, height)
+    corners = get_footprint(calculate_headings(heading), coords, width, height)
     write_to_csv(corners, coords)
 
 
@@ -106,44 +106,75 @@ def get_point(currentHeading, x, y, distance):
     return [newX + x, newY + y]
 
 
-# Given xy and heading (yaw) it finds the footprint
-def get_footprint(yaw, coords, width, height):
-    corners = list()
+# Find all the headings needed to obtain the footprint
+# TODO: When finding left headings, will heading ever be over 360? Wondering
+# this because the degrees are substracted from referance heading
+def calculate_headings(init_heading):
+    heading_dict = dict()
     
-    # Placing yaw in the 0 - 360 range
-    if yaw < 0.0:
-        mod_heading = 360.0 + yaw
+    # Find the first needed heading (known as modified heading)
+    if init_heading < 0.0:
+        mod_heading = 360.0 + heading
     else:
         mod_heading = heading
+    # Save the modified heading to the dictionary
+    heading_dict['mod'] = mod_heading 
+
+    # Find the second needed heading (known as forward right heading)
+    fwd_right_heading = mod_heading + 90.0:
+    if fwd_right_heading > 360.0:
+        fwd_right_heading = fwd_right_heading - 360.0
+    # Save the forward right heading into the dictionary
+    heading_dict['fwdr'] = fwd_right_heading
+
+    # Third heading (forward left heading)
+    fwd_left_heading = mod_heading - 90.0
+    if fwd_left_heading > 360.0:
+        fwd_left_heading = fwd_left_heading - 360.0
+    # Save into dictionary
+    heading_dict['fwdl'] = fwd_left_heading
+
+    # Similar operations need to be perfored on the opposite side of footprint
+    if mod_heading > 180.0:
+        opposite_heading = mod_heading - 180.0
+    else:
+        opposite_heading = mod_heading + 180.0
+    heading_dict['opp'] = opposite_heading
+
+    bkwd_right_heading = opposite_heading + 90.0
+    if bkwd_right_heading > 360.0:
+        bkwd_right_heading = bkwd_right_heading - 360.0
+    heading_dict['oppr'] = bkwd_right_heading
+
+    bkwd_left_heading = opposite_heading - 90.0
+    if bkwd_left_heading > 360.0:
+        bkwd_left_heading = bkwd_right_heading - 360.0
+    heading_dict['oppl'] = bkwd_right_heading
+
+    return heading_dict
+
+# Given xy and heading dictionary it finds the footprint
+def get_footprint(heading_dict, coords, width, height):
+    corners = list()
+    
+    # NOTE: heading_dict contains all needed headings with the labes as the
+    # following: 'mod', 'fwdr', 'fwdl', 'opp', 'oppr', 'oppl'
 
     fwd_coord = get_point(mod_heading, coords[0], coords[1], height)
     corners.append(init_coords)
     
-    # Find the corner to the right of the initial
-    fwd_right_heading = mod_heading + 90
-    if fwd_right_heading > 360.0:
-        fwd_right_heading = fwd_right_heading - 360
-
     # The value is saved here to be added to the polygon FIRST
     # TODO: Must be added to array_for_poly
     first_poly_point = get_point(fwd_right_heading, fwd_coord[0], 
                                 fwd_coord[1], width)
     corners.append(first_poly_point)
 
-    # Find the corner to the left of the initial
-    fwd_left_heading = mod_heading - 90
-    # NOTE: There is no check for fwd left heading being under 0
-    if fwd_left_heading > 360.0:
-        fwd_left_heading = fwd_left_heading - 360.0
-
     # Saved to be added to the polygon SECOND
     # TODO: Must be added to array_for_poly
     second_poly_point = get_point(fwd_left_heading, fwd_coord[0],
                                 fwd_coord[1], width)
+    corners.append(second_poly_points)
 
-
-    # Find the opposite corner of the initial
-    opposite_heading = 180 - abs(yaw)
     corners.append(get_point(opposite_heading, x, y, 50))
 
     return corners
