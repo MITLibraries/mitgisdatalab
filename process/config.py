@@ -37,9 +37,9 @@ def get_full_path(rel_path):
 # Variables set for shapefile/polygon creation
 # ============================================
 OUT_PATH = get_full_path(SHP_PATH)
-OUT_NAME = 'index_shapefile.shsp'
+OUT_NAME = 'index_shapefile.shp'
 OUTFILE = OUT_PATH + OUT_NAME
 GEOMETRY_TYPE = 'POLYGON'
-TEMPLATE = get_full_path('data/template_shp/template.shp')
+TEMPLATE = get_full_path('data/templates_shp/template.shp')
 HAS_M = 'DISABLED'
 HAS_Z = 'DISABLED'

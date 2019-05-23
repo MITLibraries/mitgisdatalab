@@ -45,10 +45,10 @@ def GetPoint(currentHeading, X, Y, WidthOrHeight, Distance):
     # print str(X) + "," + str(Y) + ", " + str(currentHeading)
 
     calculatedDistance = 0.0
-    Opposite = 1.0
+    Opposite = 0.001
     RadHeading = RelativeHeading * pi / 180.0
     while calculatedDistance < Distance:
-        #print "Opposite: " + str(Opposite)
+        print "Opposite: " + str(Opposite)
         Adjacent = Opposite / tan(RadHeading)
         #print "Quadrant: " + str(Quadrant)
         if Quadrant == 1:
@@ -63,10 +63,10 @@ def GetPoint(currentHeading, X, Y, WidthOrHeight, Distance):
         elif Quadrant == 4:
             newX = Opposite * -1.0
             newY = Adjacent
-        #print str(newX) + " :: " + str(newY)
+        print str(newX) + " :: " + str(newY)
         calculatedDistance = math.sqrt((newX * newX) + (newY * newY))
-        #print "Calculated Distance: " + str(calculatedDistance)
-        Opposite += 1.0
+        print "Calculated Distance: " + str(calculatedDistance)
+        Opposite += 0.01
     
     # print calculatedDistance    
     return [newX + X, newY + Y]
@@ -75,7 +75,7 @@ def GetPoint(currentHeading, X, Y, WidthOrHeight, Distance):
 # Photoscan output - latitude and longitude (6370990 vs 33.20200).
 X = 640297.412572  
 Y = 3822531.071888
-Heading = 90.225403
+Heading = 179.9
 Width = 40.0/2.0
 Height = 30.0/2.0
 

@@ -3,7 +3,7 @@ import math
 from math import pi
 from math import tan
 from math import sqrt
-import config
+from config import *
 import pandas as pd
 import arcpy
 from arcpy import env
@@ -23,18 +23,23 @@ def main():
 
 
     for index, row in drone_df.iterrows():
-        # Longitude and latitude may be switched in arcmap data OR this script
-        coords = (row['longitude'], row['latitude'])
-        heading = row['yaw']
+        if row['pitch'] == -35.6:
+            print(row['image_name'], row['longitude'], row['latitude'], row['yaw'], row['pitch'])
+        else:
+            # Longitude and latitude may be switched in arcmap data OR this script
+            coords = (row['longitude'], row['latitude'])
+            heading = row['yaw']
 
-        width, height = calculate_width_height(row['flying_height'])
+            width, height = calculate_width_height(row['flying_height'])
+            width = width/2  * 0.75
+            height = height/2 * 0.75
 
-        poly_array, corners = get_footprint(calculate_headings(heading),
+            poly_array, corners = get_footprint(calculate_headings(heading),
                                             coords, width, height)
 
-        # Turn poly_array into a polygon and add to the shapefile
-        polygon = arcpy.Polygon(poly_array)
-        add_poly_cursor.insertRow([polygon, row['image_name']])
+            # Turn poly_array into a polygon and add to the shapefile
+            polygon = arcpy.Polygon(poly_array)
+            add_poly_cursor.insertRow([polygon, row['image_name']])
 
     del add_poly_cursor
 
@@ -74,7 +79,7 @@ def get_point(cur_heading, x, y, distance):
     rel_heading, quadrant = get_heading(cur_heading)
   
     calc_distance = 0.0
-    opposite = 1.0
+    opposite = 0.0001
     rad_heading = rel_heading * pi / 180.0
 
     # Incrementally, the hypotenuse (distance) is found by moving along the
@@ -90,7 +95,7 @@ def get_point(cur_heading, x, y, distance):
         newX, newY = assign_xy_signs(quadrant, adjacent, opposite)
 
         calc_distance = math.sqrt((newX * newX) + (newY * newY))
-        opposite += 1.0
+        opposite += 0.001
     
     return [newX + x, newY + y]
 
@@ -211,7 +216,7 @@ def get_footprint(heading_dict, coords, width, height):
     third_poly_point = get_point(heading_dict['oppr'], bkwd_coord[0],
                                 bkwd_coord[1], width)
     corners.append(third_poly_point)
-    poly_array.add(arcpy.Point(third_poly_point[0], third_poly_point[1]))
+    poly_ptarray.add(arcpy.Point(third_poly_point[0], third_poly_point[1]))
 
     # FOURTH POLYGON POINT
     fourth_poly_point = get_point(heading_dict['oppl'], bkwd_coord[0],
@@ -222,7 +227,7 @@ def get_footprint(heading_dict, coords, width, height):
     # The first point needs to be added again to complete the polygon's shape
     poly_ptarray.add(arcpy.Point(first_poly_point[0], first_poly_point[1]))
 
-    return [poly_array, corners]
+    return [poly_ptarray, corners]
 
 
 # Write the found footprint to csv file
