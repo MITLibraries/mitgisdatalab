@@ -1,15 +1,15 @@
 import os
-import arcpy
+#import arcpy
 import pandas as pd
 #from arcpy import env
 #from arcpy.sa import Viewshed2
 #from osgeo import ogr
 
 
-env.overwriteOutput = True
+#env.overwriteOutput = True
 
 # Check out the ArcGIS Spatual Analyst extension license
-arcpy.CheckOutExtension('Spatial')
+#arcpy.CheckOutExtension('Spatial')
 
 cur_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -82,3 +82,6 @@ def save_viewshed(viewshed_list):
     # TODO: Depending on data structure, save viewshed with image name part of
     # the file name.
     output_view.save(output_path)
+
+if __name__ == '__main__':
+    main()
