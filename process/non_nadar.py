@@ -2,7 +2,7 @@ import os
 import arcpy
 import pandas as pd
 from arcpy import env
-from arcpy import Viewshed2
+from arcpy.sa import Viewshed2
 
 
 env.overwriteOutput = True

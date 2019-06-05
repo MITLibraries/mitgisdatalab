@@ -187,7 +187,7 @@ def get_point(cur_heading, x, y, distance):
         # correct depending on the quadrant specified by the yaw (heading)
         newX, newY = assign_xy_signs(quadrant, adjacent, opposite)
 
-        calc_distance = math.sqrt((newX * newX) + (newY * newY))
+        calc_distance = sqrt((newX * newX) + (newY * newY))
         opposite += 0.001
 
     return [newX + x, newY + y]
