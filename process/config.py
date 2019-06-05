@@ -44,3 +44,17 @@ GEOMETRY_TYPE = 'POLYGON'
 TEMPLATE = get_full_path('data/templates_shp/template.shp')
 HAS_M = 'DISABLED'
 HAS_Z = 'DISABLED'
+
+
+# ==============================================
+# Variables needed for handling non-nadar images
+# ==============================================
+INPUT_RAS = get_full_path('/../../layers/DEM/dem30a')
+# TODO: this might not be used. This is still missing the name of the polygon
+OUTPUT_PATH = get_full_path('data/non_nadar_viewsheds/')
+ANALYSIS_TYPE = 'FREQUENCY'
+ANALYSIS_METHOD = 'ALL_SIGHTLINES'
+
+# Horizontal and vertical offsets to be used for finding angle ranges
+H_OFFSET = 30.0
+V_OFFSET = 23.0 
