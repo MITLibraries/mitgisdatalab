@@ -4,6 +4,7 @@ from math import pi
 from math import tan
 from math import sqrt
 from config import *
+from non_nadar import *
 import pandas as pd
 import arcpy
 from arcpy import env
@@ -13,7 +14,7 @@ env.overwriteOutput = True
 
 def main():
     drone_df = pd.read_csv(get_full_path(DRONE_CSV_PATH))
-    print('Current Data being processed:\n', drone_df.head()) 
+    print('Current Data being processed:\n', drone_df.head())
 
     spatial_ref = arcpy.Describe(TEMPLATE).spatialReference
     arcpy.CreateFeatureclass_management(OUT_PATH, OUT_NAME, GEOMETRY_TYPE,
@@ -22,25 +23,31 @@ def main():
 
 
     for index, row in drone_df.iterrows():
-        if row['pitch'] == -35.6:
-            print(row['image_name'], row['longitude'], row['latitude'], row['yaw'], row['pitch'])
+        if (row['pitch'] >= -89.0) and (row['pitch'] <= -91.0):
+            polygon = process_nonnadar(row)
         else:
-            # Longitude and latitude may be switched in arcmap data OR this script
-            coords = (row['longitude'], row['latitude'])
-            heading = row['yaw']
+            polygon = process_nadar(row)
 
-            width, height = calculate_width_height(row['flying_height'])
-            width = width/2  * 0.75
-            height = height/2 * 0.75
-
-            poly_array, corners = get_footprint(calculate_headings(heading),
-                                            coords, width, height)
-
-            # Turn poly_array into a polygon and add to the shapefile
-            polygon = arcpy.Polygon(poly_array)
-            add_poly_cursor.insertRow([polygon, row['image_name']])
+        add_poly_cursor.insertRow([polygon, row['image_name']])
 
     del add_poly_cursor
+
+
+def process_nadar(row):
+    # Longitude and latitude may be switched in arcmap data OR this script
+    coords = (row['longitude'], row['latitude'])
+    heading = row['yaw']
+
+    width, height = calculate_width_height(row['flying_height'])
+    width = width/2  * 0.75
+    height = height/2 * 0.75
+
+    poly_array, corners = get_footprint(calculate_headings(heading),
+                                coords, width, height)
+
+    # Turn poly_array into a polygon and add to the shapefile
+    return arcpy.Polygon(poly_array)
+
 
 
 # Given a flight height (relative altitude) and utilizing the constants 
@@ -61,7 +68,7 @@ def calculate_width_height(alt):
 # Given a particular heading and distance the corner is found. 
 def get_point(cur_heading, x, y, distance):
     rel_heading, quadrant = get_heading(cur_heading)
-  
+
     calc_distance = 0.0
     opposite = 0.0001
     rad_heading = rel_heading * pi / 180.0
@@ -80,7 +87,7 @@ def get_point(cur_heading, x, y, distance):
 
         calc_distance = math.sqrt((newX * newX) + (newY * newY))
         opposite += 0.001
-    
+
     return [newX + x, newY + y]
 
 
@@ -98,7 +105,7 @@ def get_heading(heading):
     elif heading < 360.0:
         quadrant = 4
         rel_heading = 360.0 - heading
-    
+
     return [rel_heading, quadrant]
 
 
@@ -125,7 +132,7 @@ def assign_xy_signs(quad, adj, opp):
 # this because the degrees are substracted from referance heading
 def calculate_headings(init_heading):
     heading_dict = dict()
-    
+
     # Find the first needed heading (known as modified heading)
     if init_heading < 0.0:
         mod_heading = 360.0 + init_heading
@@ -171,14 +178,14 @@ def calculate_headings(init_heading):
 def get_footprint(heading_dict, coords, width, height):
     corners = list()
     poly_ptarray = arcpy.Array()
-    
+
     # NOTE: heading_dict contains all needed headings with the labes as the
     # following: 'mod', 'fwdr', 'fwdl', 'opp', 'oppr', 'oppl'
 
     fwd_coord = get_point(heading_dict['mod'], coords[0],
                         coords[1], height)
     corners.append(fwd_coord)
-    
+
     # The point is saved here to be added to the polygon FIRST
     first_poly_point = get_point(heading_dict['fwdr'], fwd_coord[0], 
                                 fwd_coord[1], width)
@@ -226,4 +233,4 @@ def write_to_csv(corners):
 
 if __name__ == '__main__':
     main()
-   
+
