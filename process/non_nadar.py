@@ -10,6 +10,8 @@ env.overwriteOutput = True
 def process_nonnadar(row):
     arcpy.CheckOutExtension('Spatial')
 
+    poly_label = 'poly_' + row['image_name']
+
     h_start = 360.0 - row['yaw'] - H_OFFSET
     h_end = 360.0 - row['yaw'] + H_OFFSET
 
@@ -21,21 +23,19 @@ def process_nonnadar(row):
     # An input observer feature must be created
     input_obs = create_observer((row['longitude'], row['latitude']))
 
-    # Create a buffer around 
+    output_view = Viewshed2(DEM_FILE, input_obs, OUT_AGL, A_TYPE, VERT_ERROR,
+                            OUT_A_REL_TABLE, REFRACT_COEFF, SURF_OFFSET,
+                            OBS_ELEV, obs_offset, INNER_RADIUS, INNER_3D,
+                            OUTER_RADIUS, OUTER_3D, h_start, h_end, v_upper,
+                            v_lower, A_METHOD)
 
+    # The created viewshed raster is converted to a polygon
+    arcpy.RasterToPolygon_conversion(output_view, LAYER_STORAGE + poly_label)
 
-    output_view = Viewshed2(in_raster=INPUT_RAS,
-                            in_observer_features=INPUT_OBS,
-                            analysis_type=ANALYSIS_TYPE,
-                            observer_offset=obs_offset,
-                            horizontal_start_angle=h_start,
-                            horizontal_end_angle=h_end,
-                            vertical_upper_angle=v_upper,
-                            vertical_lower_angle=v_lower,
-                            analysis_method=ANALYSIS_METHOD)
-    
-    # Save the viewshed
-    output_view.save(OUTPUT_PATH + 'vs_' + row['image_name'])
+    # The polygon from the viewshed is generalized with a 10 meter tolerance
+    arcpy.Generalize_edit(LAYER_STORAGE + poly_label + '.shp', '10 Meters')
+
+    return LAYER_STORAGE + poly_label
 
 
 # Coordinates of the drone are turned into a point feature class to be used as

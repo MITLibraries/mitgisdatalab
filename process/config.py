@@ -55,8 +55,8 @@ DEM_FILE = get_full_path('../layers/DEM/spoondem_1m')
 # in RasterToPolygon and Generalize_edit.
 LAYER_STORAGE = get_full_path('data/non_nadar_layers/')
 
-OUTPUT_AGL = '#'
-ANALYSIS_TYPE = 'FREQUENCY'
+OUT_AGL = '#'
+A_TYPE = 'FREQUENCY'
 VERT_ERROR = '#'
 OUT_A_REL_TABLE = '#'
 REFRACT_COEFF = '#'
@@ -71,7 +71,7 @@ INNER_3D = '#'
 OUTER_RADIUS = 80.0
 OUTER_3D = '#'
 
-ANALYSIS_METHOD = 'ALL_SIGHTLINES'
+A_METHOD = 'ALL_SIGHTLINES'
 
 # Horizontal and vertical offsets to be used for finding angle ranges
 H_OFFSET = 30.0
