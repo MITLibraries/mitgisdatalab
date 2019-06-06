@@ -19,10 +19,10 @@ def main():
 
 
     for index, row in drone_df.iterrows():
-        if (row['pitch'] >= -89.0) and (row['pitch'] <= -91.0):
-            polygon = process_nonnadar(row)
-        else:
+        if (row['pitch'] <= -89.0) and (row['pitch'] >= -91.0):
             polygon = process_nadar(row)
+        else:
+            polygon = process_nonnadar(row)
 
         add_poly_cursor.insertRow([polygon, row['image_name']])
 

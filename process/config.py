@@ -49,10 +49,28 @@ HAS_Z = 'DISABLED'
 # ==============================================
 # Variables needed for handling non-nadar images
 # ==============================================
-INPUT_RAS = get_full_path('/../../layers/DEM/dem30a')
-# TODO: this might not be used. This is still missing the name of the polygon
-OUTPUT_PATH = get_full_path('data/non_nadar_viewsheds/')
+DEM_FILE = get_full_path('../layers/DEM/spoondem_1m')
+
+# Where non-nadar layers are stored and manipulated to produce a polygon. Used
+# in RasterToPolygon and Generalize_edit.
+LAYER_STORAGE = get_full_path('data/non_nadar_layers/')
+
+OUTPUT_AGL = '#'
 ANALYSIS_TYPE = 'FREQUENCY'
+VERT_ERROR = '#'
+OUT_A_REL_TABLE = '#'
+REFRACT_COEFF = '#'
+SURF_OFFSET = '#'
+OBS_ELEV = '#'
+
+# This aspect is being determined by the lower vertical angle
+INNER_RADIUS = '#'
+INNER_3D = '#'
+
+# The maximum distance from which visibility is determined.
+OUTER_RADIUS = 80.0
+OUTER_3D = '#'
+
 ANALYSIS_METHOD = 'ALL_SIGHTLINES'
 
 # Horizontal and vertical offsets to be used for finding angle ranges

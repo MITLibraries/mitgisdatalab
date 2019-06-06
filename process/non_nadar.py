@@ -26,13 +26,13 @@ def process_nonnadar(row):
 
     output_view = Viewshed2(in_raster=INPUT_RAS,
                             in_observer_features=INPUT_OBS,
-                            analysis_type=A_TYPE,
+                            analysis_type=ANALYSIS_TYPE,
                             observer_offset=obs_offset,
                             horizontal_start_angle=h_start,
                             horizontal_end_angle=h_end,
                             vertical_upper_angle=v_upper,
                             vertical_lower_angle=v_lower,
-                            analysis_method=A_METHOD)
+                            analysis_method=ANALYSIS_METHOD)
     
     # Save the viewshed
     output_view.save(OUTPUT_PATH + 'vs_' + row['image_name'])
