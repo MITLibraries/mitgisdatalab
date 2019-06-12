@@ -8,7 +8,6 @@ OUTPUT_PATH = ''
 
 
 def main():
-    # Create a PhotoScan document object that will be used for particular project
     doc = PhotoScan.app.document
 
     # Assign a project to the PhotoScan document object
