@@ -1,6 +1,5 @@
 import os
 import arcpy
-import pandas as pd
 from arcpy import env
 from arcpy.sa import Viewshed2
 
@@ -10,7 +9,7 @@ env.overwriteOutput = True
 def process_nonnadar(row):
     arcpy.CheckOutExtension('Spatial')
 
-    poly_label = 'poly_' + row['image_name']
+    poly_label = generate_polypath(row['image_name'])
 
     h_start = 360.0 - row['yaw'] - H_OFFSET
     h_end = 360.0 - row['yaw'] + H_OFFSET
@@ -30,12 +29,12 @@ def process_nonnadar(row):
                             v_lower, A_METHOD)
 
     # The created viewshed raster is converted to a polygon
-    arcpy.RasterToPolygon_conversion(output_view, LAYER_STORAGE + poly_label)
+    arcpy.RasterToPolygon_conversion(output_view, poly_label)
 
     # The polygon from the viewshed is generalized with a 10 meter tolerance
-    arcpy.Generalize_edit(LAYER_STORAGE + poly_label + '.shp', '10 Meters')
+    arcpy.Generalize_edit(poly_label + '.shp', '10 Meters')
 
-    return LAYER_STORAGE + poly_label
+    return poly_label + '.shp'
 
 
 # Coordinates of the drone are turned into a point feature class to be used as
@@ -45,3 +44,9 @@ def create_observer(coords):
     
     return arcpy.PointGeometry(point)
 
+
+def generate_polypath(img_name):
+    # Remove the .JPG extension from the name
+    clean_name = image_name[:-4]
+
+    return LAYER_STORAGE + 'poly_' + clean_name

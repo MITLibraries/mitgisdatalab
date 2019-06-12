@@ -1,6 +1,13 @@
 import os
 
 
+# Given a relative path, the full path is returned
+def get_full_path(rel_path):
+    cur_dir = os.path.dirname(os.path.realpath(__file__))
+    
+    return os.path.join(cur_dir, rel_path)
+
+
 # =============
 # Configuations
 # =============
@@ -10,7 +17,7 @@ import os
 REL_OUTPUT_LOC = 'footprint-output/mod-output.csv'
 
 # Location where the drone data lives
-DRONE_CSV_PATH = 'data/merged_data.csv'
+DRONE_CSV_PATH = get_full_path('data/merged_data.csv')
 
 # Where the shapefile will be saved
 SHP_PATH = 'data/'
@@ -25,13 +32,6 @@ F_R = 8.8
 IM_W = 4608
 # Image height (pixels)
 IM_H = 3456
-
-
-# Given a relative path, the full path is returned
-def get_full_path(rel_path):
-    cur_dir = os.path.dirname(os.path.realpath(__file__))
-    
-    return os.path.join(cur_dir, rel_path)
 
 
 # ============================================
@@ -49,7 +49,7 @@ HAS_Z = 'DISABLED'
 # ==============================================
 # Variables needed for handling non-nadar images
 # ==============================================
-DEM_FILE = get_full_path('../layers/DEM/spoondem_1m')
+DEM_FILE = get_full_path('../../layers/DEM/spoondem_1m')
 
 # Where non-nadar layers are stored and manipulated to produce a polygon. Used
 # in RasterToPolygon and Generalize_edit.
