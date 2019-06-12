@@ -1,14 +1,14 @@
-#import pandas as pd
 import PhotoScan
 
 
-PROJ_PATH = 'E:/UserFiles/jesusg/MIT-GIS-DataLab-master/photoscan/lowRes/lowScan.psx'
-OUTPUT_PATH = 'E:/UserFiles/jesusg/MIT-GIS-DataLab-master/photoscan/lowRes/low_data.csv'
+# Path of the project you would like to extract the data from.
+PROJ_PATH = ''
+# The path where the output (data) will be saved.
+OUTPUT_PATH = ''
 
 
 def main():
     # Create a PhotoScan document object that will be used for particular project
-    print('code is running')
     doc = PhotoScan.app.document
 
     # Assign a project to the PhotoScan document object
@@ -46,35 +46,10 @@ def extract_ypr(chunk):
     
     for row in zip(image_list, yaw_list, pitch_list, roll_list):
         print(row[0])
-        f.write(str(row[0]) + '.JPG,' + str(row[1]) + ',' + str(row[2]) + ',' + str(row[3]) + '\n')
+        f.write(str(row[0]) + '.JPG,' + str(row[1]) + ','
+                + str(row[2]) + ',' + str(row[3]) + '\n')
 
     f.close()
-
-
-
-    # Dictionary is created using the data
-#    d = {'image_name': image_list, 'yaw': yaw_list,
-#        'pitch': pitch_list, 'roll': roll_list}
-
-    # Dictionary is used to create the pandas dataframe
-#    df = pd.DataFrame(data=d)
-    
-    # Newly created dataframe is exported to a csv file
-#    df.to_csv(OUTPUT_PATH)
-
-
-# Given a camera's metadata the altitudes are examined
-def analyze_altitudes(camera):
-    # Access Absolute, Relative, and GPS altitudes
-    abs_alt = float(camera.photo.meta['DJI/AbsoluteAltitude'])
-    rel_alt = float(camera.photo.meta['DJI/RelativeAltitude'])
-    gps_alt = float(camera.photo.meta['Exif/GPSAltitude'])
-    
-    print(camera.label, 'has the following altitudes:')
-    print('Absolute: %f\n Relative: %f' % (abs_alt, rel_alt))
-    
-    # GPS altitude is a bit more exact than the absolute altitude
-    print('GPS altitude: %f' % gps_alt)
 
 
 if __name__ == "__main__":
