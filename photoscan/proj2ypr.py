@@ -30,7 +30,6 @@ def extract_ypr(chunk):
         # Save camera name for reference
         image_list.append(camera.label)
 
-        # Access specific photo meta data to save yaw, pitch, and roll
         yaw = float(camera.photo.meta['DJI/GimbalYawDegree'])
         pitch = float(camera.photo.meta['DJI/GimbalPitchDegree'])
         roll = float(camera.photo.meta['DJI/GimbalRollDegree'])
