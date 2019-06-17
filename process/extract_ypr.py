@@ -1,4 +1,5 @@
-import os
+import os 
+import copy
 import pandas as pd
 from config import * 
 
@@ -6,28 +7,27 @@ from config import *
 def main():
     path = './'
     
-    image_list = find_image_paths(path)
+    image_paths = find_image_paths(path)
+    image_list = list()
     yaw_list = list()
     pitch_list = list()
     roll_list = list()
 
-    print(image_list)
-    print(len(image_list))
-
-    for image in image_list:
-        yaw, pitch, roll = find_metadata(image)
+    for path in image_paths:
+        yaw, pitch, roll = find_metadata(path)
     
         # Prepare values to be transformed to CSV
-        image_list.append(image[-12:])
+        image_list.append(path[-12:])
         yaw_list.append(yaw)
         pitch_list.append(pitch)
         roll_list.append(roll)
+
 
     d = {'image_name': image_list, 'yaw': yaw_list,
         'pitch': pitch_list, 'roll': roll_list}
 
     df = pd.DataFrame(data=d)
-    df.head()
+    print(df.head())
     
     df.to_csv(get_full_path('cam_orientation.csv'), index=False)
 
@@ -51,7 +51,9 @@ def find_metadata(image_path):
     # Locate the metadata in the file
     xmp_start = data.find(b'<x:xmpmeta')
     xmp_end = data.find(b'</x:xmpmeta')
-    xmp_str = data[xmp_start:xmp_end+12]
+    xmp_str = copy.deepcopy(data[xmp_start:xmp_end+12])
+
+    image.close()
 
     return parse_xmp(xmp_str)
 
