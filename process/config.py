@@ -76,3 +76,13 @@ A_METHOD = 'ALL_SIGHTLINES'
 # Horizontal and vertical offsets to be used for finding angle ranges
 H_OFFSET = 30.0
 V_OFFSET = 23.0 
+
+
+# =================================
+# Working with metadata of the JPEG
+# =================================
+# Tuple of EXIF tags we do not care about
+BAD_META = ('JPEGThumbnail', 'Image ImageDescription', 'Image Make',
+            'Image Model', 'Image Orientation', 'Image XResolution',
+            'Image YResolution', 'Image ResolutionUnit', 'Image Software')
+
