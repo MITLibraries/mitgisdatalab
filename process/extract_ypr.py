@@ -1,12 +1,12 @@
-import os 
+import os
 import copy
 import pandas as pd
-from config import * 
+from config import *
 
 
 def main():
     path = './'
-    
+
     image_paths = find_image_paths(path)
     image_list = list()
     yaw_list = list()
@@ -15,7 +15,7 @@ def main():
 
     for path in image_paths:
         yaw, pitch, roll = find_metadata(path)
-    
+
         # Prepare values to be transformed to CSV
         image_list.append(path[-12:])
         yaw_list.append(yaw)
@@ -28,7 +28,7 @@ def main():
 
     df = pd.DataFrame(data=d)
     print(df.head())
-    
+
     df.to_csv(get_full_path('cam_orientation.csv'), index=False)
 
 
