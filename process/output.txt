@@ -1,0 +1,80 @@
+drone-dji:AbsoluteAltitude
+drone-dji:RelativeAltitude
+drone-dji:GimbalRollDegree
+drone-dji:GimbalYawDegree
+drone-dji:GimbalPitchDegree
+drone-dji:FlightRollDegree
+drone-dji:FlightYawDegree
+drone-dji:FlightPitchDegree
+drone-dji:CamReverse
+drone-dji:GimbalReverse
+drone-dji:SelfData
+Image ImageDescription
+Image Make
+Image Model
+Image Orientation
+Image XResolution
+Image YResolution
+Image ResolutionUnit
+Image Software
+Image DateTime
+Image YCbCrPositioning
+Image ExifOffset
+GPS GPSVersionID
+GPS GPSLatitudeRef
+GPS GPSLatitude
+GPS GPSLongitudeRef
+GPS GPSLongitude
+GPS GPSAltitudeRef
+GPS GPSAltitude
+Image GPSInfo
+Image XPComment
+Image XPKeywords
+Thumbnail Compression
+Thumbnail XResolution
+Thumbnail YResolution
+Thumbnail ResolutionUnit
+Thumbnail JPEGInterchangeFormat
+Thumbnail JPEGInterchangeFormatLength
+EXIF ExposureTime
+EXIF FNumber
+EXIF ExposureProgram
+EXIF ISOSpeedRatings
+EXIF ExifVersion
+EXIF DateTimeOriginal
+EXIF DateTimeDigitized
+EXIF ComponentsConfiguration
+EXIF CompressedBitsPerPixel
+EXIF ShutterSpeedValue
+EXIF ApertureValue
+EXIF ExposureBiasValue
+EXIF MaxApertureValue
+EXIF SubjectDistance
+EXIF MeteringMode
+EXIF LightSource
+EXIF Flash
+EXIF FocalLength
+EXIF MakerNote
+EXIF FlashPixVersion
+EXIF ColorSpace
+EXIF ExifImageWidth
+EXIF ExifImageLength
+Interoperability InteroperabilityIndex
+Interoperability InteroperabilityVersion
+EXIF InteroperabilityOffset
+EXIF ExposureIndex
+EXIF FileSource
+EXIF SceneType
+EXIF CustomRendered
+EXIF ExposureMode
+EXIF WhiteBalance
+EXIF DigitalZoomRatio
+EXIF FocalLengthIn35mmFilm
+EXIF SceneCaptureType
+EXIF GainControl
+EXIF Contrast
+EXIF Saturation
+EXIF Sharpness
+EXIF SubjectDistanceRange
+EXIF BodySerialNumber
+JPEGThumbnail

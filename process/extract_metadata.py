@@ -16,7 +16,7 @@ def main():
     rel_list = list()
 
     for path in image_paths:
-        yaw, pitch, roll, abs_alt, rel_alt = find_xmp_metadata(path)
+        yaw, pitch, roll, abs_alt, rel_alt, xmp_list = find_xmp_metadata(path)
     
         # Prepare values to be transformed to CSV
         image_list.append(path[-12:])
@@ -26,14 +26,20 @@ def main():
         abs_list.append(abs_alt)
         rel_list.append(rel_alt)
 
-        find_exif_metadata(path)
+        exif_list = find_exif_metadata(path)
+
+        for x in xmp_list:
+            print(x)
+
+        for e in exif_list:
+            print(e)
 
     d = {'image_name': image_list, 'yaw': yaw_list,
         'pitch': pitch_list, 'roll': roll_list,
         'absolute_altitude': abs_alt, 'relative_altitude': rel_alt}
 
     df = pd.DataFrame(data=d)
-    print(df.head())
+    #print(df.head())
     
     df.to_csv(get_full_path('cam_meta_extract.csv'), index=False)
 
@@ -79,15 +85,16 @@ def parse_xmp(xmp_str):
 
             real_meta[key] = value
 
-    print('xmp_meta_extracted:\n', real_meta)
+    #print('xmp_meta_extracted:\n', real_meta)
 
     yaw = real_meta['drone-dji:GimbalYawDegree']
     pitch = real_meta['drone-dji:GimbalPitchDegree']
     roll = real_meta['drone-dji:GimbalRollDegree']
     abs_alt = real_meta['drone-dji:AbsoluteAltitude']
     rel_alt = real_meta['drone-dji:RelativeAltitude']
+    xmp_list = real_meta.keys()
 
-    return (yaw, pitch, roll, abs_alt, rel_alt)
+    return (yaw, pitch, roll, abs_alt, rel_alt, xmp_list)
 
 
 def find_exif_metadata(image_path):
@@ -96,15 +103,16 @@ def find_exif_metadata(image_path):
     tags = exifread.process_file(f)
 
     exif_dict = dict()
+    tag_list = list()
 
     for tag in tags.keys():
+        tag_list.append(tag)
         if tag not in BAD_META:
             exif_dict[tag] = tags[tag]
 
-    print('exif_metadata\n', exif_dict) 
-    print('\nImage Software: ', exif_dict['Image Software'])
-
     f.close()
+
+    return tag_list
 
 
 def parse_xmpfield(field):
