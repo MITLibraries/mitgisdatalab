@@ -8,38 +8,41 @@ def main():
     path = './'
     
     image_paths = find_image_paths(path)
-    image_list = list()
-    yaw_list = list()
-    pitch_list = list()
-    roll_list = list()
-    abs_list = list()
-    rel_list = list()
+
+    # Initialize lists needed for each relevant metadata field
+    image_list, yaw_list, pitch_list, roll_list = ([] for i in range(4))
+    yaw_flist, pitch_flist, roll_flist = ([] for i in range(3))
+    abs_list, rel_list = ([] for i in range(2))
 
     for path in image_paths:
-        yaw, pitch, roll, abs_alt, rel_alt, xmp_list = find_xmp_metadata(path)
+        # Relevent xmp data is returned
+        rel_xmp = find_xmp_metadata(path)
     
         # Prepare values to be transformed to CSV
-        image_list.append(path[-12:])
-        yaw_list.append(yaw)
-        pitch_list.append(pitch)
-        roll_list.append(roll)
-        abs_list.append(abs_alt)
-        rel_list.append(rel_alt)
+        image_list.append(path[-12:]); yaw_list.append(rel_xmp['yaw']);
+        pitch_list.append(rel_xmp['pitch']); roll_list.append(rel_xmp['roll']);
+        yaw_flist.append(rel_xmp['yawf']); 
+        pitch_flist.append(rel_xmp['pitchf']);
+        roll_flist.append(rel_xmp['rollf']);
+        abs_list.append(rel_xmp['abs_alt']);
+        rel_list.append(rel_xmp['rel_alt']);
 
         exif_list = find_exif_metadata(path)
 
+        '''
         for x in xmp_list:
             print(x)
 
         for e in exif_list:
             print(e)
+        '''
 
     d = {'image_name': image_list, 'yaw': yaw_list,
         'pitch': pitch_list, 'roll': roll_list,
-        'absolute_altitude': abs_alt, 'relative_altitude': rel_alt}
+        'absolute_altitude': abs_list, 'relative_altitude': rel_list}
 
     df = pd.DataFrame(data=d)
-    #print(df.head())
+    print(df.head())
     
     df.to_csv(get_full_path('cam_meta_extract.csv'), index=False)
 
@@ -85,16 +88,21 @@ def parse_xmp(xmp_str):
 
             real_meta[key] = value
 
-    #print('xmp_meta_extracted:\n', real_meta)
+    print('xmp_meta_extracted:\n', real_meta)
+    # Dictionary created to store and return relevata xmp metadata
+    rel_xmp = dict()
 
-    yaw = real_meta['drone-dji:GimbalYawDegree']
-    pitch = real_meta['drone-dji:GimbalPitchDegree']
-    roll = real_meta['drone-dji:GimbalRollDegree']
-    abs_alt = real_meta['drone-dji:AbsoluteAltitude']
-    rel_alt = real_meta['drone-dji:RelativeAltitude']
+    rel_xmp['yaw'] = real_meta['drone-dji:GimbalYawDegree']
+    rel_xmp['pitch'] = real_meta['drone-dji:GimbalPitchDegree']
+    rel_xmp['roll'] = real_meta['drone-dji:GimbalRollDegree']
+    rel_xmp['yawf'] = real_meta['drone-dji:FlightYawDegree']
+    rel_xmp['pitchf'] = real_meta['drone-dji:FlightPitchDegree']
+    rel_xmp['rollf'] = real_meta['drone-dji:FlightRollDegree']
+    rel_xmp['abs_alt'] = real_meta['drone-dji:AbsoluteAltitude']
+    rel_xmp['rel_alt'] = real_meta['drone-dji:RelativeAltitude']
     xmp_list = real_meta.keys()
 
-    return (yaw, pitch, roll, abs_alt, rel_alt, xmp_list)
+    return rel_xmp
 
 
 def find_exif_metadata(image_path):
