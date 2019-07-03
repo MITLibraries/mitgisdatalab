@@ -89,7 +89,7 @@ INNER_RADIUS = '#'
 INNER_3D = '#'
 
 # The maximum distance from which visibility is determined.
-OUTER_RADIUS = 80.0
+OUTER_RADIUS = 200.0
 OUTER_3D = '#'
 
 A_METHOD = 'ALL_SIGHTLINES'

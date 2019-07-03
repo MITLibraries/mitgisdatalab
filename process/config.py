@@ -86,3 +86,4 @@ BAD_META = ('JPEGThumbnail', 'Image ImageDescription', 'Image Make',
             'Image Model', 'Image Orientation', 'Image XResolution',
             'Image YResolution', 'Image ResolutionUnit', 'Image Software')
 
+GOOD_META = ('GPS GPSAltitude', 'GPS GPSAltitudeRef')

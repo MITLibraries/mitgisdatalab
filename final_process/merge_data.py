@@ -9,7 +9,7 @@ def main():
 
     # Set a desired output order of columns
     order = ['image_name', 'latitude', 'longitude',
-            'yaw', 'pitch', 'roll', 'flying_height']
+            'yaw', 'pitch', 'roll', 'flying_height', 'elevation']
 
     # Merge the two dataframes together
     merged_df = pd.merge(arc_df, photo_df, on='image_name')

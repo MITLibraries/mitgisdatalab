@@ -30,7 +30,7 @@ def main():
                 for line in cursor:
                     polygon = line[0]
 
-        add_poly_cursor.insertRow([polygon, row['image_name'][:-4]])
+        add_poly_cursor.insertRow([polygon, row['image_name'][:-4], row['latitude'], row['longitude'], row['yaw'], row['pitch'], row['roll'], row['flying_height'], row['elevation']])
 
     del add_poly_cursor
 
@@ -41,7 +41,7 @@ def init_add_cursor():
     arcpy.CreateFeatureclass_management(OUT_PATH, OUT_NAME, GEOMETRY_TYPE,
                                         TEMPLATE, HAS_M, HAS_Z, spatial_ref)
 
-    return arcpy.da.InsertCursor(OUTFILE, ['SHAPE@', 'photoID'])
+    return arcpy.da.InsertCursor(OUTFILE, ['SHAPE@', 'photoID', 'latitude', 'longitude', 'yaw', 'pitch', 'roll', 'fly_height', 'elevation'])
 
 
 

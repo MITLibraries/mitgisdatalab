@@ -12,8 +12,14 @@ def process_nonnadir(row):
 
     poly_label = generate_polypath(row['image_name'])
 
-    h_start = 360.0 - row['yaw'] - H_OFFSET
-    h_end = 360.0 - row['yaw'] + H_OFFSET
+    h_start = 360.0 + row['yaw'] - H_OFFSET
+    h_end = 360.0 + row['yaw'] + H_OFFSET
+
+    if h_start > 360.0:
+        h_start = h_start - 360.0
+
+    if h_end > 360.0:
+        h_end = h_end - 360.0
 
     v_upper = row['pitch'] + V_OFFSET
     v_lower = row['pitch'] - V_OFFSET

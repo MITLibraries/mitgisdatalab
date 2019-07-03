@@ -28,6 +28,9 @@ def main():
         rel_list.append(rel_xmp['rel_alt']);
 
         exif_list = find_exif_metadata(path)
+        print('Exif:\n', exif_list)
+        print('Alt:', exif_list['GPS GPSAltitude'])
+        print('AltRef:', exif_list['GPS GPSAltitudeRef'])
 
         '''
         for x in xmp_list:
@@ -115,12 +118,12 @@ def find_exif_metadata(image_path):
 
     for tag in tags.keys():
         tag_list.append(tag)
-        if tag not in BAD_META:
+        if tag in GOOD_META:
             exif_dict[tag] = tags[tag]
 
     f.close()
 
-    return tag_list
+    return exif_dict
 
 
 def parse_xmpfield(field):

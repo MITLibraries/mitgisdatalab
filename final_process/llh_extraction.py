@@ -22,15 +22,18 @@ def main():
             lat_list = list()
             long_list = list()
             flyingHeig_list = list()
+            elevation_list = list()
             for row in cursor:
                 image_list.append(row[0])
                 lat_list.append(row[1])
                 long_list.append(row[2])
                 flyingHeig_list.append(row[3] - row[4])
+                elevation_list.append(row[4])
 
             # Data is saved as a dictionary
             d = {'image_name': image_list, 'latitude': lat_list, 
-                'longitude': long_list, 'flying_height': flyingHeig_list}
+                'longitude': long_list, 'flying_height': flyingHeig_list,
+                 'elevation': elevation_list}
 
             # Dictionary is transformed into a pandas dataframe
             df = pd.DataFrame(data=d)
