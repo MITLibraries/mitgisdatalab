@@ -11,7 +11,6 @@ def get_full_path(rel_path):
 # =============
 # Configuations
 # =============
-
 # Relative location where the output csv file is stored. Outputting a csv is
 # not necessary for finding the footprint of the images
 REL_OUTPUT_LOC = 'footprint-output/mod-output.csv'
@@ -20,7 +19,29 @@ REL_OUTPUT_LOC = 'footprint-output/mod-output.csv'
 DRONE_CSV_PATH = get_full_path('data/merged_data.csv')
 
 # Where the shapefile will be saved
-SHP_PATH = 'data/'
+SHP_PATH = 'data/index/'
+
+# =========================================================================
+# Constants needed for obtaining all required data in CSV format
+# =========================================================================
+# Shapefile containing lat, long for all images
+PTS_SHP = 'E:\\UserFiles\\jesusg\\testing\\produce_products_test\\products\\D2M.gdb\\ImagePoints'
+
+# Digital surface model used for flying height
+DSM_FLIGHT = 'E:\\UserFiles\\jesusg\\testing\\produce_products_test\\products\\2D\\produce_products_test_DSM.tif'
+
+# Shapefile containing lat, long, and flying height
+FLIGHT_PTS_SHP = 'E:/UserFiles/jesusg/mitgisdatalab-master/process/data/arcmap_temp/LocNdHeight.shp'
+
+# Where the data is extracted and saved in csv format
+ARCMAP_CSV = get_full_path('data/arcmap_data.csv')
+
+# Location of yaw, pitch, and roll values
+YPR_CSV = get_full_path('data/ypr_data.csv')
+
+# Merged csv data
+MERGED_CSV = get_full_path('data/merged_data.csv')
+
 # ============================================================================
 # Constants for the width and height of a single image footprint on the ground
 # ============================================================================
@@ -34,9 +55,9 @@ IM_W = 4608
 IM_H = 3456
 
 
-# ============================================
-# Variables set for shapefile/polygon creation
-# ============================================
+# ==================================================
+# Variables set for final shapefile/polygon creation
+# ==================================================
 OUT_PATH = get_full_path(SHP_PATH)
 OUT_NAME = 'index_shapefile.shp'
 OUTFILE = OUT_PATH + OUT_NAME
@@ -53,7 +74,7 @@ DEM_FILE = get_full_path('../../layers/DEM/spoondem_1m')
 
 # Where non-nadar layers are stored and manipulated to produce a polygon. Used
 # in RasterToPolygon and Generalize_edit.
-LAYER_STORAGE = get_full_path('data/non_nadar_layers/')
+LAYER_STORAGE = get_full_path('data/non_nadir_temp/')
 
 OUT_AGL = '#'
 A_TYPE = 'FREQUENCY'
@@ -68,7 +89,7 @@ INNER_RADIUS = '#'
 INNER_3D = '#'
 
 # The maximum distance from which visibility is determined.
-OUTER_RADIUS = 80.0
+OUTER_RADIUS = 200.0
 OUTER_3D = '#'
 
 A_METHOD = 'ALL_SIGHTLINES'
@@ -81,9 +102,13 @@ V_OFFSET = 23.0
 # =================================
 # Working with metadata of the JPEG
 # =================================
+# Be sure to either use '/' or '\\' when entering a directory
+PHOTOS_DIR = 'E:/UserFiles/jesusg/testing/SpoonOnlyImages'
+
+
 # Tuple of EXIF tags we do not care about
 BAD_META = ('JPEGThumbnail', 'Image ImageDescription', 'Image Make',
             'Image Model', 'Image Orientation', 'Image XResolution',
             'Image YResolution', 'Image ResolutionUnit', 'Image Software')
 
-GOOD_META = ('GPS GPSAltitude', 'GPS GPSAltitudeRef')
+GOOD_META = ('GPS GPSAltitudeRef', 'GPS GPSAltitude', 'EXIF SubjectDistanceRange')

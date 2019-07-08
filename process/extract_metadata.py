@@ -5,7 +5,7 @@ from config import *
 
 
 def main():
-    path = './'
+    path = 'E:/UserFiles/jesusg/testing/SpoonOnlyImages'
     
     image_paths = find_image_paths(path)
 
@@ -27,21 +27,17 @@ def main():
         abs_list.append(rel_xmp['abs_alt']);
         rel_list.append(rel_xmp['rel_alt']);
 
-        exif_list = find_exif_metadata(path)
-        print('Exif:\n', exif_list)
-        print('Alt:', exif_list['GPS GPSAltitude'])
-        print('AltRef:', exif_list['GPS GPSAltitudeRef'])
+        real_exif = find_exif_metadata(path)
+        print(real_exif)
+        #print('Altitude:', real_exif['GPS GPSAltitude'])
+        #print('AltitudeRef:', real_exif['GPS GPSAltitudeRef'])
+        #print('Subject Distance range:', real_exif['EXIF SubjectDistanceRange'])
 
-        '''
-        for x in xmp_list:
-            print(x)
-
-        for e in exif_list:
-            print(e)
-        '''
 
     d = {'image_name': image_list, 'yaw': yaw_list,
         'pitch': pitch_list, 'roll': roll_list,
+        'yaw_flight': yaw_flist, 'pitch_flight': pitch_flist,
+        'roll_flight': roll_flist,
         'absolute_altitude': abs_list, 'relative_altitude': rel_list}
 
     df = pd.DataFrame(data=d)
@@ -53,7 +49,9 @@ def main():
 def find_image_paths(path):
     images = list()
 
+    print('About to begin searching. . .')
     for r, d, f in os.walk(path):
+        print(r, d, f)
         for file in f:
             if '.JPG' in file:
                 images.append(os.path.join(r, file))
@@ -91,7 +89,7 @@ def parse_xmp(xmp_str):
 
             real_meta[key] = value
 
-    print('xmp_meta_extracted:\n', real_meta)
+    #print('xmp_meta_extracted:\n', real_meta)
     # Dictionary created to store and return relevata xmp metadata
     rel_xmp = dict()
 
@@ -114,10 +112,8 @@ def find_exif_metadata(image_path):
     tags = exifread.process_file(f)
 
     exif_dict = dict()
-    tag_list = list()
 
     for tag in tags.keys():
-        tag_list.append(tag)
         if tag in GOOD_META:
             exif_dict[tag] = tags[tag]
 

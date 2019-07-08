@@ -5,9 +5,7 @@ from config import *
 
 
 def main():
-    path = './'
-
-    image_paths = find_image_paths(path)
+    image_paths = find_image_paths(PHOTOS_DIR)
     image_list = list()
     yaw_list = list()
     pitch_list = list()
@@ -27,9 +25,8 @@ def main():
         'pitch': pitch_list, 'roll': roll_list}
 
     df = pd.DataFrame(data=d)
-    print(df.head())
 
-    df.to_csv(get_full_path('cam_orientation.csv'), index=False)
+    df.to_csv(YPR_CSV, index=False)
 
 
 def find_image_paths(path):
