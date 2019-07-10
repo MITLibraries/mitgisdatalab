@@ -74,8 +74,6 @@ def assign_xy_signs(quad, adj, opp):
 
 
 # Find all the headings needed to obtain the footprint
-# TODO: When finding left headings, will heading ever be over 360? Wondering
-# this because the degrees are substracted from referance heading
 def calculate_headings(init_heading):
     heading_dict = dict()
 

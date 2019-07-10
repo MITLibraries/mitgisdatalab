@@ -9,7 +9,7 @@ env.overwriteOutput = True
 
 
 def main():
-    drone_df = pd.read_csv(DRONE_CSV_PATH)
+    drone_df = pd.read_csv(DRONE_META_PATH)
 
     add_poly_cursor = init_add_cursor()
 

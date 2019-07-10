@@ -1,7 +1,7 @@
-# Obtain the yaw, pitch, and roll => output csv
+# Obtain the yaw, pitch, and roll => ypr_data.csv
 exec(open('./ypr_extraction.py').read())
 
-# Obtain lat, long, and flying height => output csv
+# Obtain lat, long, and flying height => arcmap_data.csv
 exec(open('./llh_extraction.py').read())
 
 # Combine the above two datasets
