@@ -11,12 +11,16 @@ def get_full_path(rel_path):
 # Constants that actually need to be changed.
 # Be sure to either use '/' or '\\' when entering a directory.
 # ============================================================
+# Path to the directory where all the photos you wish to process are stored.
 PHOTOS_DIR = 'E:/UserFiles/jesusg/testing/SpoonOnlyImages'
 
 # Shapefile containing lat, long for all images
+# Path to the products/D2M.gdb/ImagePoints which something that is obtained
+# through Drone2Map processing.
 PTS_SHP = 'E:\\UserFiles\\jesusg\\testing\\produce_products_test\\products\\D2M.gdb\\ImagePoints'
 
 # Digital surface model used for flying height
+# 2D digital surface model found in the products of Drone2Map.
 DSM_FLIGHT = 'E:\\UserFiles\\jesusg\\testing\\produce_products_test\\products\\2D\\produce_products_test_DSM.tif'
 
 # Here goes the digital elevation model used when performing the Viewshed2 ArcPy
