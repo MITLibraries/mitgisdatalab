@@ -15,5 +15,5 @@ the images were taken.
 ### How to use:
 
 1. Download the zip for the repository.
-2. Open *config.py*, modify constants and paths.
-3. Run *execute.py*.
+2. Open **config.py**, modify constants and paths.
+3. Run **execute.py**.
